@@ -11,12 +11,12 @@ auth_cookie_name = 'pypi_account'
 
 def set_auth(response: Response, user_id: int):
     hash_val = __hash_text(str(user_id))
-    val = "{}:{}".format(user_id, hash_val)
+    val = f"{user_id}:{hash_val}"
     response.set_cookie(auth_cookie_name, val, secure=False, httponly=True, samesite='Lax')
 
 
 def __hash_text(text: str) -> str:
-    text = 'salty__' + text + '__text'
+    text = f'salty__{text}__text'
     return hashlib.sha512(text.encode('utf-8')).hexdigest()
 
 

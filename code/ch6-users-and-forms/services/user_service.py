@@ -12,7 +12,4 @@ def create_account(name: str, email: str, password: str) -> User:
 
 
 def login_user(email: str, password: str) -> Optional[User]:
-    if password == 'abc':
-        return User("test user", email, 'abc')
-
-    return None
+    return User("test user", email, 'abc') if password == 'abc' else None

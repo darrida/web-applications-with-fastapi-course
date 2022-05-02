@@ -33,7 +33,7 @@ class Package(SqlAlchemyBase):
     ], back_populates='package')
 
     def __repr__(self):
-        return '<Package {}>'.format(self.id)
+        return f'<Package {self.id}>'
 
 
 # p = Package()  # one query

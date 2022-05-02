@@ -46,8 +46,7 @@ def get_package_by_id(package_name: str) -> Optional[Package]:
     session = db_session.create_session()
 
     try:
-        package = session.query(Package).filter(Package.id == package_name).first()
-        return package
+        return session.query(Package).filter(Package.id == package_name).first()
     finally:
         session.close()
 
@@ -56,11 +55,12 @@ def get_latest_release_for_package(package_name: str) -> Optional[Release]:
     session = db_session.create_session()
 
     try:
-        release = session.query(Release) \
-            .filter(Release.package_id == package_name) \
-            .order_by(Release.created_date.desc()) \
+        return (
+            session.query(Release)
+            .filter(Release.package_id == package_name)
+            .order_by(Release.created_date.desc())
             .first()
+        )
 
-        return release
     finally:
         session.close()

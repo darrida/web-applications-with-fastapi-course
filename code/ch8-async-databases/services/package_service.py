@@ -54,6 +54,4 @@ async def get_latest_release_for_package(package_name: str) -> Optional[Release]
             .order_by(Release.created_date.desc())
 
         results = await session.execute(query)
-        release = results.scalar()
-
-        return release
+        return results.scalar()

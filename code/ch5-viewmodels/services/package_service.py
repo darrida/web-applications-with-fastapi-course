@@ -22,11 +22,14 @@ def latest_packages(limit: int = 5) -> List:
 
 
 def get_package_by_id(package_name: str) -> Optional[Package]:
-    package = Package(
-        package_name, "This is the summary", "Full details here!",
-        "https://fastapi.tiangolo.com/", "MIT", "Sebastián Ramírez"
+    return Package(
+        package_name,
+        "This is the summary",
+        "Full details here!",
+        "https://fastapi.tiangolo.com/",
+        "MIT",
+        "Sebastián Ramírez",
     )
-    return package
 
 
 def get_latest_release_for_package(package_name: str) -> Optional[Release]:

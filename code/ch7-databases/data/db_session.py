@@ -22,8 +22,8 @@ def global_init(db_file: str):
     folder = Path(db_file).parent
     folder.mkdir(parents=True, exist_ok=True)
 
-    conn_str = 'sqlite:///' + db_file.strip()
-    print("Connecting to DB with {}".format(conn_str))
+    conn_str = f'sqlite:///{db_file.strip()}'
+    print(f"Connecting to DB with {conn_str}")
 
     # Adding check_same_thread = False after the recording. This can be an issue about
     # creating / owner thread when cleaning up sessions, etc. This is a sqlite restriction

@@ -73,19 +73,25 @@ def do_import_packages(file_data: List[dict], user_lookup: Dict[str, User]):
                 load_package(p, user_lookup)
                 bar.update(idx)
             except Exception as x:
-                errored_packages.append((p, " *** Errored out for package {}, {}".format(p.get('package_name'), x)))
+                errored_packages.append(
+                    (
+                        p,
+                        f" *** Errored out for package {p.get('package_name')}, {x}",
+                    )
+                )
+
                 raise
     sys.stderr.flush()
     sys.stdout.flush()
     print()
-    print("Completed packages with {} errors.".format(len(errored_packages)))
+    print(f"Completed packages with {len(errored_packages)} errors.")
     for (p, txt) in errored_packages:
         print(txt)
 
 
 def do_load_files() -> List[dict]:
     data_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../data/pypi-top-100'))
-    print("Loading files from {}".format(data_path))
+    print(f"Loading files from {data_path}")
     files = get_file_names(data_path)
     print("Found {:,} files, loading ...".format(len(files)), flush=True)
     time.sleep(.1)
@@ -110,7 +116,10 @@ def find_users(data: List[dict]) -> dict:
         for idx, p in enumerate(data):
             info = p.get('info')
             found_users.update(get_email_and_name_from_text(info.get('author'), info.get('author_email')))
-            found_users.update(get_email_and_name_from_text(info.get('maintainer'), info.get('maintainer_email')))
+            found_users |= get_email_and_name_from_text(
+                info.get('maintainer'), info.get('maintainer_email')
+            )
+
             bar.update(idx)
 
     sys.stderr.flush()
@@ -129,10 +138,7 @@ def get_email_and_name_from_text(name: str, email: str) -> dict:
         return data
 
     emails = email.strip().lower().split(',')
-    names = name
-    if len(email) > 1:
-        names = name.strip().split(',')
-
+    names = name.strip().split(',') if len(email) > 1 else name
     for n, e in zip(names, emails):
         if not n or not e:
             continue
@@ -147,7 +153,7 @@ def load_file_data(filename: str) -> dict:
         with open(filename, 'r', encoding='utf-8') as fin:
             data = json.load(fin)
     except Exception as x:
-        print("ERROR in file: {}, details: {}".format(filename, x), flush=True)
+        print(f"ERROR in file: {filename}, details: {x}", flush=True)
         raise
 
     return data
@@ -171,8 +177,6 @@ def load_package(data: dict, user_lookup: Dict[str, User]):
             p.created_date = releases[0].created_date
 
         maintainers_lookup = get_email_and_name_from_text(info.get('maintainer'), info.get('maintainer_email'))
-        maintainers = []
-
         p.summary = info.get('summary')
         p.description = info.get('description')
 
@@ -187,7 +191,7 @@ def load_package(data: dict, user_lookup: Dict[str, User]):
         session = db_session.create_session()
         session.add(p)
         session.add_all(releases)
-        if maintainers:
+        if maintainers := []:
             session.add_all(maintainers)
         session.commit()
         session.close()
@@ -224,7 +228,7 @@ def detect_license(license_text: str) -> Optional[str]:
 
 def build_releases(package_id: str, releases: dict) -> List[Release]:
     db_releases = []
-    for k in releases.keys():
+    for k in releases:
         all_releases_for_version = releases.get(k)
         if not all_releases_for_version:
             continue
@@ -277,12 +281,11 @@ def init_db():
 
 
 def get_file_names(data_path: str) -> List[str]:
-    files = []
-    for f in os.listdir(data_path):
-        if f.endswith('.json'):
-            files.append(
-                os.path.abspath(os.path.join(data_path, f))
-            )
+    files = [
+        os.path.abspath(os.path.join(data_path, f))
+        for f in os.listdir(data_path)
+        if f.endswith('.json')
+    ]
 
     files.sort()
     return files

@@ -29,9 +29,9 @@ def global_init(db_file: str):
     # We don't really get that with SQLite but when you switch something like Postgres
     # It would "light up" with async. Since recording, SQLAlchemy throws and error
     # if this would be the case. We need to explicitly switch to aiosqlite as below.
-    conn_str = 'sqlite+pysqlite:///' + db_file.strip()
-    async_conn_str = 'sqlite+aiosqlite:///' + db_file.strip()
-    print("Connecting to DB with {}".format(async_conn_str))
+    conn_str = f'sqlite+pysqlite:///{db_file.strip()}'
+    async_conn_str = f'sqlite+aiosqlite:///{db_file.strip()}'
+    print(f"Connecting to DB with {async_conn_str}")
 
     # Adding check_same_thread = False after the recording. This can be an issue about
     # creating / owner thread when cleaning up sessions, etc. This is a sqlite restriction

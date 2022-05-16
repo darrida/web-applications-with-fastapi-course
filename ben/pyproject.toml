@@ -1,0 +1,19 @@
+
+[tool.poetry]
+name = "src"
+version = "0.1.0"
+description = ""
+authors = ["darrida <darrida.py@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.75.2"
+uvicorn = "^0.17.6"
+fastapi-jinja = { git = "https://github.com/darrida/fastapi-jinja.git", branch = "main" }
+fastapi-chameleon = "^0.1.12"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
